@@ -8,6 +8,7 @@ import {
   SafeAreaView,
   ScrollView,
   TouchableOpacity,
+  Alert,
   TouchableWithoutFeedback,
   ActivityIndicator,
   RefreshControl,
@@ -19,16 +20,29 @@ import {Request, url, currencyFormat} from '../helpers/';
 const DEVICE = Dimensions.get('window');
 
 const data2 = {
-  labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun'],
+  labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
   datasets: [
     {
-      data: [20, 10, 30, 80, 40, 46],
+      data: [125, 90, 100, 138],
       color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
       strokeWidth: 2,
     },
   ],
-  legend: ['Total Barang Terjual'],
+  legend: ['Total Transaksi'],
 };
+
+const data1 = {
+  labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+  datasets: [
+    {
+      data: [0, 0, 0, 0, 0, 0, 0],
+      color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+      strokeWidth: 2,
+    },
+  ],
+  legend: ['Total Transaksi'],
+};
+
 const chartConfig = {
   backgroundGradientFrom: '#f72525',
   backgroundGradientFromOpacity: 1,
@@ -52,19 +66,39 @@ const Report = () => {
     Request(url + '/transactions', 'GET')
       .then((res) => {
         if (res.error) {
-          alert('Error, Coba beberapa saat lagi');
+          Alert.alert('Error', 'Coba beberapa saat lagi');
         } else {
           let total = {totalHarga: 0, totalTrx: 0};
+          data1.datasets[0].data = [0, 0, 0, 0, 0, 0, 0];
           res.data.forEach((i) => {
+            console.log(i.id);
             total.totalHarga += i.totalHarga;
             i.totalItem = 0;
             i.cartItem.forEach((e) => (i.totalItem += e.jumlah));
+            if (moment.unix(i.created_at).days() === 0) {
+              data1.datasets[0].data[6] += 1;
+            } else if (moment.unix(i.created_at).days() === 1) {
+              data1.datasets[0].data[0] += 1;
+            } else if (moment.unix(i.created_at).days() === 2) {
+              data1.datasets[0].data[1] += 1;
+            } else if (moment.unix(i.created_at).days() === 3) {
+              data1.datasets[0].data[2] += 1;
+            } else if (moment.unix(i.created_at).days() === 4) {
+              data1.datasets[0].data[3] += 1;
+            } else if (moment.unix(i.created_at).days() === 5) {
+              data1.datasets[0].data[4] += 1;
+            } else if (moment.unix(i.created_at).days() === 6) {
+              data1.datasets[0].data[5] += 1;
+            }
           });
           total.totalTrx = res.data.length;
           setTrxData(total);
-          setTodayTransaction(res.data);
+          setTodayTransaction(
+            res.data.sort((a, b) => b.created_at - a.created_at),
+          );
           setRefresh(false);
           setLoading(false);
+          console.log(data1.datasets[0].data);
         }
       })
       .catch((e) => console.log(e));
@@ -130,7 +164,7 @@ const Report = () => {
           <View style={{height: DEVICE.height / 2.3}}>
             <LineChart
               style={styles.diagramView}
-              data={data2}
+              data={report === 'mingguan' ? data1 : data2}
               width={DEVICE.width / 1.1}
               height={DEVICE.height / 2.8}
               chartConfig={chartConfig}

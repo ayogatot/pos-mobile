@@ -7,6 +7,7 @@ import {
   Dimensions,
   FlatList,
   TouchableWithoutFeedback,
+  Alert,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -65,7 +66,7 @@ const Cart = ({navigation}) => {
               if (totalHarga > 0) {
                 navigation.navigate('pay');
               } else {
-                alert('Masukan barang terlebih dahulu');
+                Alert.alert('Keranjang', 'Masukan barang terlebih dahulu');
               }
             }}>
             <View style={styles.checkoutButton}>

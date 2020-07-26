@@ -25,13 +25,17 @@ const CardTop = ({item, handleRemove, handlePlus, handleMinus}) => {
             : item.nama}
         </Text>
         <View style={cardStyle.quantity}>
-          <TouchableOpacity onPress={handlePlus}>
-            <Icon name="plus-circle" size={30} color="#fff" />
-          </TouchableOpacity>
+          <TouchableWithoutFeedback onPress={handleMinus}>
+            <View style={cardStyle.plusMin}>
+              <Icon name="minus-circle" size={30} color="#fff" />
+            </View>
+          </TouchableWithoutFeedback>
           <Text style={cardStyle.quantityText}>{item.jumlah}</Text>
-          <TouchableOpacity onPress={handleMinus}>
-            <Icon name="minus-circle" size={30} color="#fff" />
-          </TouchableOpacity>
+          <TouchableWithoutFeedback onPress={handlePlus}>
+            <View style={cardStyle.plusMin}>
+              <Icon name="plus-circle" size={30} color="#fff" />
+            </View>
+          </TouchableWithoutFeedback>
         </View>
         <Text style={cardStyle.price}>
           RP. {currencyFormat(item.totalHarga)}
@@ -83,6 +87,13 @@ const cardStyle = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingVertical: 10,
+  },
+  plusMin: {
+    width: DEVICE.width / 10,
+    height: DEVICE.width / 10,
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   quantityText: {
     color: '#fff',

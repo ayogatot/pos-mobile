@@ -63,8 +63,10 @@ export default (state = initialState, action) => {
       plusItem.forEach((i) => {
         if (i.id === action.payload.id) {
           let _jumlah = i.jumlah + 1;
-          i.jumlah = _jumlah;
-          i.totalHarga = Number(i.harga) * _jumlah;
+          if (i.stock >= _jumlah) {
+            i.jumlah = _jumlah;
+            i.totalHarga = Number(i.harga) * _jumlah;
+          }
         }
         _total += i.totalHarga;
       });

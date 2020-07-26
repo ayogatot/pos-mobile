@@ -11,6 +11,8 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   ActivityIndicator,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 
 const DEVICE = Dimensions.get('window');
@@ -20,7 +22,9 @@ const Login = ({login}) => {
   return (
     <>
       <StatusBar backgroundColor="red" />
-      <View style={styles.container}>
+      <KeyboardAvoidingView
+        style={styles.container}
+        behavior={Platform.OS == 'ios' ? 'padding' : 'height'}>
         <View style={styles.top}>
           <Image style={styles.image} source={require('../images/logo.jpg')} />
         </View>
@@ -62,7 +66,7 @@ const Login = ({login}) => {
             </TouchableOpacity>
           </View>
         </View>
-      </View>
+      </KeyboardAvoidingView>
     </>
   );
 };
@@ -113,7 +117,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 20,
+    marginTop: 15,
   },
   textButton: {
     color: '#fff',
